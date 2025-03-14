@@ -42,3 +42,282 @@ rule BLX_Stealer_rule {
         (all of ($str*) or any of ($blx_stealer_network*) or any of ($blx_stealer_hash*))
 
 }
+rule MintStealer
+{
+meta:
+        Author = "Benjamin Nworah"
+        Description = "Detect Mint Stealer malware"
+        Date = "13-09-2024"
+        Hash1 = "1064ab9e734628e74c580c5aba71e4660ee3ed68db71f6aa81e30f148a5080fa" // SHA-256 Hash
+        Hash2 = "cc93a4627a459d505c46de6fac342f856fb8f95b6a4fdcbd5e48be59aa4cbb7b" // SHA-256 Hash
+
+    strings:
+        $a1 = "FindResource"
+        $a2 = "GetSystemTimeAsFileTime"
+        $a3 = /NUITKA.{1,15}/
+     
+    condition:
+        all of ($a*)
+}
+rule Daolpu_infostealer 
+{
+    meta:
+        Author = "Benjamin Nworah"
+        Description = "Detect Daolpu malware"
+        Date = "16-08-2024"
+        Hash1 = "3a9323a939fbecbc6d0ceb5c1e1f3ebde91e9f186b46fdf3ba1aee03d1d41cd8"
+        Hash2 = "4ad9845e691dd415420e0c253ba452772495c0b971f48294b54631e79a22644a"
+
+    strings:
+        $a1 = "D:\\c++\\Mal_Cookie_x64\\x64\\Release\\mscorsvc.pdb"
+        $a2 = "C:\\Windows\\Temp\\result.txt"
+     
+    condition:
+        all of ($a*)
+}
+rule njRAT {
+
+    meta:
+        author                      = "Adedamola Okelola"
+        date                        = "2023-08-10"
+        description                 = "njRAT executable detection"
+        threat_name                 = "Windows.Trojan.njRAT"
+        tlp                         = "TLP:WHITE"
+        operating_system            = "windows"
+        version                     = "v1.0"
+
+    strings:
+        $a1  = { 24 65 66 65 39 65 61 64 63 2D 64 34 61 65 2D 34 62 39 65 2D 62 38 61 62 2D 37 65 34 37 66 38 64 62 36 61 63 39 }
+        $a2  = "get_Registry" ascii fullword
+        $a3  = "SEE_MASK_NOZONECHECKS" wide fullword
+        $a4  = "Execute ERROR" wide fullword
+        $a5  = "Download ERROR" wide fullword
+        $a6  = "[k1]" wide fullword
+        $a7  = "cmd.exe /c ping 0 -n 2 & del \"" wide fullword
+        $a8  = "netsh firewall add allowedprogram \"" wide fullword
+        $a9  = "[+] System : " wide fullword
+        $a10 = "Software\\Microsoft\\Windows\\CurrentVersion\\Run" wide
+
+    condition:
+        5 of them
+}
+rule Wazuh_Meduza
+{
+    meta:
+    malware_name = "Meduza"
+    description = "Meduza is a trojan stealer that gathers sensitive data such as browser cookies, histories, crypto wallet information, and more from infected machines."
+    author = "Iseoluwa Titiloye Oyeniyi"
+    version = "1"
+ 
+    strings:
+
+    $x1 = "autofill-profiles.json"  ascii wide
+    $x2 = "formhistory.sqlite"  ascii wide
+    $x3 = "logins.json"  ascii wide
+    $x4 = "cookies.sqlite"  ascii wide
+    $x5 = "key4.db"  ascii wide
+    $x6 = "Electrum\\config"  ascii wide
+    $x7 = "Sparrow\\wallets"  ascii wide
+    $x8 = "Coinomi\\wallets"  ascii wide
+    $x9 = "Electrum-LTC\\wallets"  ascii wide
+    $x10 = "Mozilla\\SeaMonkey"  ascii wide
+    $x11 = "Yandex\\YandexBrowser"  ascii wide
+    $x12 = "BrowserPass"  ascii wide
+    $x13 = "`anonymous namespace'"  ascii wide
+    $x14 = "api-ms-"  ascii wide
+    $x15 = "FlsAlloc"  ascii wide
+    $x16 = "mscoree.dll"  ascii wide
+    $x17 = "AppPolicyGetProcessTerminationMethod"  ascii wide
+ 
+    condition:
+    3 of ( $x* )
+}
+rule  Remcos_RAT 
+{
+    meta:
+        Author = "Benjamin Nworah"
+        Description = "Detect Remcos RAT"
+        Reference =  "Personal Research"
+        Date = "27-09-2022"
+        Hash1 = "bcca157ab3520b1104411e86ea78f6a2efbb58ef"
+        Hash2 = "8d3c6c8e83275a60401a152797e7b158ea808413"
+    strings:
+        $a1 = "Olympianize3.exe"  wide nocase
+        $a2 = "target_pid" ascii
+        $a3 = "VS_VERSION_INFO" wide
+        $a4 = {45 56 45 4E 54 5F 53 49 4E 4B 5F 41 64 64 52 65 66 00 15 00 45 56 45 4E 54 5F 53 
+               49 4E 4B 5F 52 65 6C 65 61 73 65 00 00 14 00 45 56 45 4E 54 5F 53 49 4E 4B 5F 51 
+               75 65 72 79 49 6E 74 65 72 66 61 63 65 00 8E 00 5F 5F 76 62 61 45 78 63 65 70 74 
+               48 61 6E 64 6C 65 72}
+        $a5 = "C:\\Program Files (x86)\\Microsoft Visual Studio\\VB98\\VB6.OLB"
+        $b1 = "Software\\Microsoft\\Windows\\CurrentVersion"
+        $b2 = "SearchPath" 
+        $b3 = "RegCreateKeyEx"
+        $b4 = "WritePrivateProfileString"
+        $b5 = "MoveFile"
+        $b6 = "CreateFile"
+        $b7 = "GetTempFileName"
+        $b8 = "LookupPrivilegeValue"
+        $b9 = {52 65 67 44 65 6C 65 74 65 4B 65 79 45 78}
+    condition:
+        all of ($a*) or all of ($b*)
+}     
+rule REMCOS_RAT_variants
+{
+    meta:
+        Author = "Adam M. Swanda"
+        Website = "https://www.deadbits.org"
+        Repo = "https://github.com/deadbits/yara-rules"
+        Date = "2019-07-18"
+        Description = "Detects multiple variants of REMCOS seen in the wild."
+    strings:
+        $funcs1 = "autogetofflinelogs" ascii fullword
+        $funcs2 = "clearlogins" ascii fullword
+        $funcs3 = "getofflinelogs" ascii fullword
+        $funcs4 = "execcom" ascii fullword
+        $funcs5 = "deletekeylog" ascii fullword
+        $funcs6 = "remscriptexecd" ascii fullword
+        $funcs7 = "getwindows" ascii fullword
+        $funcs8 = "fundlldata" ascii fullword
+        $funcs9 = "getfunlib" ascii fullword
+        $funcs10 = "autofflinelogs" ascii fullword
+        $funcs11 = "getclipboard" ascii fullword
+        $funcs12 = "getscrslist" ascii fullword
+        $funcs13 = "offlinelogs" ascii fullword
+        $funcs14 = "getcamsingleframe" ascii fullword
+        $funcs15 = "listfiles" ascii fullword
+        $funcs16 = "getproclist" ascii fullword
+        $funcs17 = "onlinelogs" ascii fullword
+        $funcs18 = "getdrives" ascii fullword
+        $funcs19 = "remscriptsuccess" ascii fullword
+        $funcs20 = "getcamframe" ascii fullword
+        $str_a1 = "C:\\Windows\\System32\\cmd.exe" ascii fullword
+        $str_a2 = "C:\\WINDOWS\\system32\\userinit.exe" ascii fullword
+        $str_a3 = "/k %windir%\\System32\\reg.exe ADD HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System /v EnableLUA /t REG_DWOR" ascii
+        $str_a4 = "/k %windir%\\System32\\reg.exe ADD HKLM\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System /v EnableLUA /t REG_DWOR" ascii
+        $str_a5 = "\\AppData\\Local\\Google\\Chrome\\User Data\\Default\\Login Data" ascii fullword
+        $str_b1 = "CreateObject(\"Scripting.FileSystemObject\").DeleteFile(Wscript.ScriptFullName)" wide fullword
+        $str_b2 = "Executing file: " ascii fullword
+        $str_b3 = "GetDirectListeningPort" ascii fullword
+        $str_b4 = "Set fso = CreateObject(\"Scripting.FileSystemObject\")" wide fullword
+        $str_b5 = "licence_code.txt" ascii fullword
+        $str_b6 = "\\restart.vbs" wide fullword
+        $str_b7 = "\\update.vbs" wide fullword
+        $str_b8 = "\\uninstall.vbs" wide fullword
+        $str_b9 = "Downloaded file: " ascii fullword
+        $str_b10 = "Downloading file: " ascii fullword
+        $str_b11 = "KeepAlive Enabled! Timeout: %i seconds" ascii fullword
+        $str_b12 = "Failed to upload file: " ascii fullword
+        $str_b13 = "StartForward" ascii fullword
+        $str_b14 = "StopForward" ascii fullword
+        $str_b15 = "fso.DeleteFile \"" wide fullword
+        $str_b16 = "On Error Resume Next" wide fullword
+        $str_b17 = "fso.DeleteFolder \"" wide fullword
+        $str_b18 = "Uploaded file: " ascii fullword
+        $str_b19 = "Unable to delete: " ascii fullword
+        $str_b20 = "while fso.FileExists(\"" wide fullword
+        $str_c0 = "[Firefox StoredLogins not found]" ascii fullword
+        $str_c1 = "Software\\Classes\\mscfile\\shell\\open\\command" ascii fullword
+        $str_c2 = "[Chrome StoredLogins found, cleared!]" ascii fullword
+        $str_c3 = "[Chrome StoredLogins not found]" ascii fullword
+        $str_c4 = "[Firefox StoredLogins cleared!]" ascii fullword
+        $str_c5 = "Remcos_Mutex_Inj" ascii fullword
+        $str_c6 = "\\logins.json" ascii fullword
+        $str_c7 = "[Chrome Cookies found, cleared!]" ascii fullword
+        $str_c8 = "[Firefox Cookies not found]" ascii fullword
+        $str_c9 = "[Chrome Cookies not found]" ascii fullword
+        $str_c10 = "[Firefox cookies found, cleared!]" ascii fullword
+        $str_c11 = "mscfile\\shell\\open\\command" ascii fullword
+        $str_c12 = "\\AppData\\Roaming\\Mozilla\\Firefox\\Profiles\\" ascii fullword
+        $str_c13 = "eventvwr.exe" ascii fullword
+    condition:
+        uint16(0) == 0x5a4d and filesize < 600KB
+        and
+        (
+            ((8 of ($funcs*)) or all of ($funcs*))
+            or
+            ((1 of ($str_a*) and 4 of them) or all of ($str_a*))
+            or
+            ((8 of ($str_b*)) or all of ($str_b*))
+            or
+            all of ($str_c*)
+         )
+}
+import "console"
+
+rule RANSOM_Lockbit_Black_Packer : Ransomware {
+
+   meta:
+      author = "SECUINFRA Falcon Team"
+      description = "Detects the packer used by Lockbit Black (Version 3)"
+      reference = "https://twitter.com/vxunderground/status/1543661557883740161"
+      date = "2022-07-04"
+      tlp = "WHITE"
+      yarahub_uuid = "de99eca0-9502-4942-a30a-b3f9303953e3"
+      yarahub_reference_md5 = "38745539b71cf201bb502437f891d799"
+      yarahub_license = "CC BY 4.0"
+      yarahub_rule_matching_tlp = "TLP:WHITE"
+      yarahub_rule_sharing_tlp = "TLP:WHITE"
+      yarahub_author_twitter = "@SI_FalconTeam"
+      hash0 = "80e8defa5377018b093b5b90de0f2957f7062144c83a09a56bba1fe4eda932ce"
+      hash1 = "506f3b12853375a1fbbf85c82ddf13341cf941c5acd4a39a51d6addf145a7a51"
+      hash2 = "d61af007f6c792b8fb6c677143b7d0e2533394e28c50737588e40da475c040ee"
+
+   strings:
+      $sectionname0 = ".rdata$zzzdbg" ascii
+      $sectionname1 = ".xyz" ascii fullword
+      
+      // hash checks
+      $check0 = {3d 75 80 91 76 ?? ?? 3d 1b a4 04 00 ?? ?? 3d 9b b4 84 0b}
+      $check1 = {3d 75 ba 0e 64}
+      
+      // hex/ascii calculations
+      $asciiCalc = {66 83 f8 41 ?? ?? 66 83 f8 46 ?? ?? 66 83 e8 37}
+      
+   condition:
+      uint16(0) == 0x5a4d
+      and filesize > 111KB // Size on Disk/1.5
+      and filesize < 270KB // Size of Image*1.5
+      and all of ($sectionname*)
+      and any of ($check*)
+      and $asciiCalc
+      and for any i in (0..pe.number_of_sections - 1): 
+      (math.entropy(pe.sections[i].raw_data_offset, pe.sections[i].raw_data_size) > 7.9
+      and (pe.sections[i].name == ".text" or pe.sections[i].name == ".data" or pe.sections[i].name == ".pdata")//)
+      // console requires Yara 4.2.0. For older versions uncomment closing bracket above und comment out the line below
+      and console.log("High Entropy section found:", pe.sections[i].name))
+}
+
+rule _Blackbit_ransomware {
+   meta:
+      description = "Blackbit executable detection"
+      author = "Anthony Faruna"
+      reference = "https://github.com/Neo23x0/yarGen"
+      date = "2023-08-21"
+      hash1 = "1d2db070008116a7a1992ed7dad7e7f26a0bfee3499338c3e603161e3f18db2f"
+      hash2 = "2f22f39ec1b30fbe3d5e6184378ef686de2038d12d98229f5bb14cf10653ea21"
+   strings:
+      $s1 = "<requestedExecutionLevel level=\"asInvoker\" uiAccess=\"false\"/>" fullword ascii
+      $s2 = "<assemblyIdentity version=\"1.0.0.0\" name=\"MyApplication.app\"/>" fullword ascii
+      $s3 = "Type Descriptor'" fullword ascii
+      $s4 = "constructor or from DllMain." fullword ascii
+      $s5 = "<trustInfo xmlns=\"urn:schemas-microsoft-com:asm.v2\">" fullword ascii
+      $s6 = "DINGXXPADDINGPADDINGXXPADDINGPADDINGXXPADDINGPADDINGXXPADDINGPADDINGXXPADDINGPADDINGXXPADDINGPADDINGXXPADDINGPADDINGXXPADDINGPAD" ascii
+      $s7 = "Base Class Descriptor at (" fullword ascii
+      $s8 = "Class Hierarchy Descriptor'" fullword ascii
+      $s9 = "Complete Object Locator'" fullword ascii
+      $s10 = "<requestedPrivileges xmlns=\"urn:schemas-microsoft-com:asm.v3\">" fullword ascii
+      $s11 = "svchost" fullword wide /* Goodware String - occurred 17 times */
+      $s12 = "Broken pipe" fullword ascii /* Goodware String - occurred 742 times */
+      $s13 = "Permission denied" fullword ascii /* Goodware String - occurred 823 times */
+      $s14 = "D$<RSP" fullword ascii /* Goodware String - occurred 1 times */
+      $s15 = "delete[]" fullword ascii
+      $s16 = "</trustInfo>" fullword ascii
+      $s17 = "T$h9T$" fullword ascii /* Goodware String - occurred 1 times */
+      $s18 = "L$PQSV" fullword ascii /* Goodware String - occurred 1 times */
+      $s19 = "B|BxBtBpBlBhBdB`B\\BXBTBPBLBHBDB@B<B8B4B0B,B(B$B B" fullword wide
+      $s20 = "ForceRemove" fullword ascii /* Goodware String - occurred 1167 times */
+   condition:
+      ( uint16(0) == 0x5a4d and filesize < 2000KB and ( 8 of them )
+      ) or ( all of them )
+}
